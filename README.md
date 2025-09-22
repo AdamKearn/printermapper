@@ -30,7 +30,7 @@ I recommend when creating these registrys changes you select replace and also en
 Make sure you have already downloaded and deployed the utility out to your devices before hand.  You can download the latest version [here](https://github.com/AdamKearn/printermapper/releases/latest) or compile the application yourself.
 
 ```reg
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run]
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run]
 "StartPrinterMapper"="C:\Windows\System32\PrinterMapper.exe"
 ```
 

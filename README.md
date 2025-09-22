@@ -1,11 +1,18 @@
 # Printer Mapper
 
-## Deploy Printers
+## Overview
 
-Within GroupPolicy you can create a user-based policy to deploy the following registry edits.
-These will then be used by the PrinterMapper utility in the background.
+Printer Mapper helps automate printer deployment via Group Policy and registry settings. It logs activity for troubleshooting and can be built from source using .NET.
 
-```
+When running the utility it will silently map the printers to the users device with zero human interaction.
+
+---
+
+## 1. Deploying Printers
+
+**Step 1:** Create a user-based Group Policy to set these registry values:
+
+```reg
 [HKEY_CURRENT_USER\Software\PrinterMapper]
 "ManagedPrintServer"="PRINT-SERVER-NAME"
 "ITOffice"="\\PRINT-SERVER-NAME\ITOffice"
@@ -13,18 +20,16 @@ These will then be used by the PrinterMapper utility in the background.
 "Reception"="\\PRINT-SERVER-NAME\Reception"
 ```
 
-After deploying the utility to your devices you can then create a policy that will automatically start the application after user-logon.
+**Step 2:** Automatically start PrinterMapper after user logon by adding this to Group Policy:
 
-This can be done by defining the following policy.
-
-```
+```reg
 [HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run]
 "StartPrinterMapper"="C:\Windows\System32\PrinterMapper.exe"
 ```
 
-Optionally you can also allow non-administrators to install printer drivers without requiring elevation to allow a fully silent/automatic process of mapping printers.
+**Optional:** Allow non-admins to install printer drivers silently:
 
-```
+```reg
 [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\Printers\PointAndPrint]
 "RestrictDriverInstallationToAdministrators"=dword:00000000
 "Restricted"=dword:00000001
@@ -35,24 +40,29 @@ Optionally you can also allow non-administrators to install printer drivers with
 "UpdatePromptSettings"=dword:00000002
 ```
 
-## Debugging
+---
 
-Everytime the application runs it will create a log within the users appdata folder.
-You can find this by going to the following path:
+## 2. Debugging
 
-```
-%appdata%/PrinterMapper/log.txt
-```
-
-## Building from source code.
-
-If you need to modify/edit this application then you can build from source using the .NET
-First make sure you have downloaded and installed the latest SDK from Microsoft. You can find this [here](https://dotnet.microsoft.com/en-us/download).
-
-You can use the `dotnet run` command to quickly test and develop new feautes and once you are happy use the `dotnet publish` command to compile a single binary that can be distributed across your devices.
+PrinterMapper creates a log file every run:
 
 ```
-dotnet run
-
-dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
+%appdata%\PrinterMapper\log.txt
 ```
+
+---
+
+## 3. Building from Source
+
+1. Install the latest [.NET SDK](https://dotnet.microsoft.com/en-us/download).
+2. To run the code locally on your computer for quicker development:
+
+   ```
+   dotnet run
+   ```
+
+3. To create a single distributable binary:
+
+   ```
+   dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
+   ```
